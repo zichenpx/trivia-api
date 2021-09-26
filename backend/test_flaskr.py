@@ -19,18 +19,25 @@ class TriviaTestCase(unittest.TestCase):
         self.database_path = "postgres://{}:{}@{}/{}".format('USER', 'PASSWORD', 'localhost:5432', self.database_name)
         setup_db(self.app, self.database_path)
 
-        self.new_question = {
-          'question': 'The capital of Taiwan(ROC)',
-          'answer': 'Taipei',
-          'difficulty': 1,
-          'category': 3
-        }
+        # self.new_question = {
+        #   'question': 'The capital of Taiwan(ROC)',
+        #   'answer': 'Taipei',
+        #   'difficulty': 1,
+        #   'category': 3
+        # }
 
         self.test_quizz = {
-            'previous_questions': [1],
+            'previous_questions': [2],
             'quiz_category': {
                 'id': 3
             }
+        }
+
+        self.new_question = {
+          'question': 'Two Famous French Food',
+          'answer': 'Cheese, Wine',
+          'difficulty': 1,
+          'category': 3
         }
 
         # binds the app to the current context
@@ -172,22 +179,22 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(data['success'], False)
         self.assertEqual(data['message'], 'resource not found')
 
-    # def test_play_quizzes(self):
-    #     response = self.client().post("/quizzes", json=self.new_question)
-    #     data = json.loads(response.data)
+    def test_play_quizzes(self):
+        response = self.client().post("/quizzes", json=self.test_quizz)
+        data = json.loads(response.data)
 
-    #     self.assertEqual(response.status_code, 200)
-    #     self.assertIn('question', data)
-    #     # self.assertEqual(str(data['question']['category']), self.new_question['quiz_category']['id'])
-    #     # self.assertTrue(data['question'])
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('question', data)
+        # self.assertEqual(str(data['question']['category']), self.test_quizz['quiz_category']['id'])
+        # self.assertTrue(data['question'])
 
-    # def test_404_play_quizzes(self):
-    #     response = self.client().post("/quizzes", json={})
-    #     data = json.loads(response.data)
+    def test_404_play_quizzes(self):
+        response = self.client().post("/quizzes", json={})
+        data = json.loads(response.data)
 
-    #     self.assertEqual(response.status_code, 400)
-    #     self.assertIn('success', data)
-    #     self.assertFalse(data['success'])
+        self.assertEqual(response.status_code, 404)
+        self.assertIn('success', data)
+        self.assertFalse(data['success'])
 
 # Make the tests conveniently executable
 if __name__ == "__main__":

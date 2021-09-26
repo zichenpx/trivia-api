@@ -250,7 +250,9 @@ def create_app(test_config=None):
   '''
   @app.route('/quizzes', methods=['POST'])
   def play_quiz():
-    data = request.get_json()
+    data = request.get_json(force=True)
+    print(data)
+    print(type(data))
     previous_questions = data.get("previous_questions")
     quiz_category = data.get("quiz_category")
     quiz_category_id = quiz_category["id"]
@@ -278,8 +280,6 @@ def create_app(test_config=None):
     
     except:
       abort(500)
-
-
 
   '''
   @TODO: 
