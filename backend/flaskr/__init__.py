@@ -249,41 +249,34 @@ def create_app(test_config=None):
   '''
   @app.route('/quizzes', methods=['POST'])
   def play_quiz():
-    try:
-      request_body = request.get_json()
+    data = request.get_json()
+    previous_questions = data.get("previous_questions")
+    quiz_category = data.get("quiz_category")
+    quiz_category_id = quiz_category["id"]
 
-      if 'previous_questions' not in request_body \
-          or 'quiz_category' not in request_body \
-          or 'id' not in request_body['quiz_category']:
-        raise TypeError
-
-      previous_questions = request_body['previous_questions']
-      category_id = request_body['quiz_category']['id']
-      questions_query = Question.query.with_entities(Question.id).filter(Question.id.notin_(previous_questions))
-
-      if category_id != 0:
-        questions_query = questions_query.filter(Question.category == str(category_id))
-
-      questions_query = questions_query.order_by(Question.id).all()
-      question_ids = [q.id for q in questions_query]
-
-      if len(question_ids) == 0:
-        return jsonify({
-            'question': None
-        }), 200
-
-      random_question_id = random.choice(question_ids)
-      next_question = Question.query.get(random_question_id).format()
-
-      return jsonify({
-        'question': next_question
-      }), 200
-
-    except TypeError:
+    if 'previous_questions' not in data \
+        or 'quiz_category' not in data \
+        or 'id' not in data['quiz_category']:
       abort(400)
 
+    try:
+      questions = Question.query.filter(Question.id.notin_(previous_questions))
+
+      if quiz_category_id:
+        questions = questions.filter_by(category=quiz_category_id).all()
+
+      next_question = random.choice(questions).format()
+
+      result = {
+        "success": True,
+        "question": next_question,
+      }
+      return jsonify(result), 200
+    
     except:
       abort(500)
+
+
 
   '''
   @TODO: 
