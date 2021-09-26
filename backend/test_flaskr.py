@@ -138,7 +138,7 @@ class TriviaTestCase(unittest.TestCase):
 
         self.assertEqual(response.status_code, 201)
         self.assertEqual(data['success'], True)
-        # self.assertEqual(data['deleted'], q_id)
+        self.assertEqual(data['deleted'], q_id)
         self.assertTrue(len(questions_before) - len(questions_after) == 1)
         self.assertEqual(question, None)
 
@@ -178,16 +178,16 @@ class TriviaTestCase(unittest.TestCase):
 
     #     self.assertEqual(response.status_code, 200)
     #     self.assertIn('question', data)
-        # self.assertEqual(str(data['question']['category']), self.new_question['quiz_category']['id'])
-        # self.assertTrue(data['question'])
+    #     # self.assertEqual(str(data['question']['category']), self.new_question['quiz_category']['id'])
+    #     # self.assertTrue(data['question'])
 
-    def test_404_play_quizzes(self):
-        response = self.client().post("/quizzes", json={})
-        data = json.loads(response.data)
+    # def test_404_play_quizzes(self):
+    #     response = self.client().post("/quizzes", json={})
+    #     data = json.loads(response.data)
 
-        self.assertEqual(response.status_code, 400)
-        self.assertIn('success', data)
-        self.assertFalse(data['success'])
+    #     self.assertEqual(response.status_code, 400)
+    #     self.assertIn('success', data)
+    #     self.assertFalse(data['success'])
 
 # Make the tests conveniently executable
 if __name__ == "__main__":

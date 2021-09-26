@@ -134,6 +134,7 @@ def create_app(test_config=None):
       result = {
         "success": True,
         "id": q_id,
+        "deleted": q_id,
         "message": "Question " + str(q_id) + " was successfully deleted"
       }
       return jsonify(result), 201
@@ -257,14 +258,16 @@ def create_app(test_config=None):
     if 'previous_questions' not in data \
         or 'quiz_category' not in data \
         or 'id' not in data['quiz_category']:
-      abort(400)
+      abort(404)
 
     try:
-      questions = Question.query.filter(Question.id.notin_(previous_questions))
+      questions_rest = Question.query.filter(Question.id.notin_(previous_questions))
 
       if quiz_category_id:
-        questions = questions.filter_by(category=quiz_category_id).all()
-
+        questions = questions_rest.filter_by(category=quiz_category_id).all()
+      else:
+        abort(404)
+        
       next_question = random.choice(questions).format()
 
       result = {
