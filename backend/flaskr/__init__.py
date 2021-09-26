@@ -122,25 +122,22 @@ def create_app(test_config=None):
   '''
   @app.route("/questions/<int:q_id>", methods=["DELETE"])
   def delete_question(q_id):
+    question = Question.query.filter(Question.id == q_id).one_or_none()
+    if question is None:
+      abort(404)
     try:
-      question = Question.query.filter(Question.id == q_id).one_or_none()
-      if question is None:
-        abort(404)
-
       question.delete()
+    except:
+      abort(422)
+    finally:
       db.session.close()
       result = {
         "success": True,
         "id": q_id,
-        "message": "Question " + q_id + "successfully deleted"
+        "message": "Question " + str(q_id) + " was successfully deleted"
       }
       return jsonify(result), 201
-    except:
-      abort(422)
-
-
-
-
+      
   '''
   @TODO: 
   Create an endpoint to POST a new question, 
@@ -169,15 +166,16 @@ def create_app(test_config=None):
       search_term = data["searchTerm"]
       search = Question.query.filter(Question.question.ilike(f'%{search_term}%')).all()
       total_results = len(search)
-      current_results = paginate_questions(request, search)
-
-
-      result = {
-        "success": True,
-        "results": current_results,
-        "total_results": total_results,
-      }
-      return jsonify(result), 200
+      if (len(search) !=0):
+        current_results = paginate_questions(request, search)
+        result = {
+          "success": True,
+          "results": current_results,
+          "total_results": total_results,
+        }
+        return jsonify(result), 200
+      else:
+        abort(404)
 
     else:
       question = data.get("question", "")
@@ -197,19 +195,16 @@ def create_app(test_config=None):
         )
         new_question.insert()
       except Exception:
-        error = True
         db.session.rollback()
         print(exc.info())
+        abort(500)
       finally:
         db.session.close()
-        if error:
-          abort(500)
-        else:
-          result = {
-            "success": True,
-            "message": "New question: " + question + " created."
-          }
-          return jsonify(result), 201
+        result = {
+          "success": True,
+          "message": "New question: " + question + " created."
+        }
+        return jsonify(result), 201
 
 
   '''
@@ -252,29 +247,43 @@ def create_app(test_config=None):
   one question at a time is displayed, the user is allowed to answer
   and shown whether they were correct or not. 
   '''
-  @app.route("/quizzed", methods=["POST"])
-  def get_quiz():
-    data = request.get_json()
-    previous_questions = data.get("previous_questions")
-    quiz_category = data.get("quiz_category")
-    quiz_category_id = int(quiz_category["id"])
+  @app.route('/quizzes', methods=['POST'])
+  def play_quiz():
+    try:
+      request_body = request.get_json()
 
-    if ((quiz_category is None) or (previous_questions is None)):
+      if 'previous_questions' not in request_body \
+          or 'quiz_category' not in request_body \
+          or 'id' not in request_body['quiz_category']:
+        raise TypeError
+
+      previous_questions = request_body['previous_questions']
+      category_id = request_body['quiz_category']['id']
+      questions_query = Question.query.with_entities(Question.id).filter(Question.id.notin_(previous_questions))
+
+      if category_id != 0:
+        questions_query = questions_query.filter(Question.category == str(category_id))
+
+      questions_query = questions_query.order_by(Question.id).all()
+      question_ids = [q.id for q in questions_query]
+
+      if len(question_ids) == 0:
+        return jsonify({
+            'question': None
+        }), 200
+
+      random_question_id = random.choice(question_ids)
+      next_question = Question.query.get(random_question_id).format()
+
+      return jsonify({
+        'question': next_question
+      }), 200
+
+    except TypeError:
       abort(400)
 
-    question = Question.query.filter(Question.id.notin_(previous_questions))
-    
-    if quiz_category_id:
-      questions = question.filter_by(category=quiz_category_id).all()
-
-    next_question = random.choice(questions).format()
-
-    result = {
-      "success": True,
-      "question": next_question
-    }
-    return jsonify(result), 200
-
+    except:
+      abort(500)
 
   '''
   @TODO: 
