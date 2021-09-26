@@ -124,25 +124,20 @@ def create_app(test_config=None):
   def delete_question(q_id):
     try:
       question = Question.query.filter(Question.id == q_id).one_or_none()
-      
       if question is None:
         abort(404)
+
       question.delete()
-    except Exception:
-      error = True
-      db.session.rollback()
-      print(exc.info())
-    finally:  
       db.session.close()
-      if error:
-        abort(500)
-      else:
-        result = {
-          "success": True,
-          "id": q_id,
-          "message": "Question " + q_id + "successfully deleted"
-        }
-        return jsonify(result), 201
+      result = {
+        "success": True,
+        "id": q_id,
+        "message": "Question " + q_id + "successfully deleted"
+      }
+      return jsonify(result), 201
+    except:
+      abort(422)
+
 
 
 
