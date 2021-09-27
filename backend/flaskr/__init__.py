@@ -197,7 +197,7 @@ def create_app(test_config=None):
         new_question.insert()
       except Exception:
         db.session.rollback()
-        print(exc.info())
+        # print(exc.info())
         abort(500)
       finally:
         db.session.close()
@@ -251,16 +251,20 @@ def create_app(test_config=None):
   @app.route('/quizzes', methods=['POST'])
   def play_quiz():
     data = request.get_json(force=True)
+    print("print data: ")
     print(data)
+    print("print data type: ")
     print(type(data))
-    previous_questions = data.get("previous_questions")
-    quiz_category = data.get("quiz_category")
-    quiz_category_id = quiz_category["id"]
 
     if 'previous_questions' not in data \
         or 'quiz_category' not in data \
         or 'id' not in data['quiz_category']:
       abort(404)
+    # test_404_play_quizzes 出現 TypeError: 'NoneType' object is not subscriptable, 
+    # 將傳遞的值(data)先經判斷是否存在後，再儲存至變數之中。
+    previous_questions = data.get("previous_questions")
+    quiz_category = data.get("quiz_category")
+    quiz_category_id = quiz_category["id"]
 
     try:
       questions_rest = Question.query.filter(Question.id.notin_(previous_questions))

@@ -185,8 +185,8 @@ class TriviaTestCase(unittest.TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertIn('question', data)
-        # self.assertEqual(str(data['question']['category']), self.test_quizz['quiz_category']['id'])
-        # self.assertTrue(data['question'])
+        self.assertEqual((data['question']['category']), self.test_quizz['quiz_category']['id'])
+        self.assertTrue(data['question'])
 
     def test_404_play_quizzes(self):
         response = self.client().post("/quizzes", json={})
