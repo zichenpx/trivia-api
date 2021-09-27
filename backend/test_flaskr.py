@@ -12,7 +12,7 @@ class TriviaTestCase(unittest.TestCase):
     def setUp(self):
         self.app = create_app()
         self.client = self.app.test_client
-        self.database_name = "trivia_api"
+        self.database_name = "trivia_test"
         self.database_path = "postgres://{}:{}@{}/{}".format("USER", "PASSWORD", "localhost:5432", self.database_name)
         setup_db(self.app, self.database_path)
 
@@ -127,7 +127,7 @@ class TriviaTestCase(unittest.TestCase):
 
     def test_delete_question(self):
         questions_before = Question.query.all()
-        q_id = 4
+        q_id = 1
 
         response = self.client().delete("/questions/{}".format(q_id))
         data = json.loads(response.data)
@@ -154,10 +154,7 @@ class TriviaTestCase(unittest.TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(data["success"], True)
-        # check
-        # self.assertEqual(len(data["question"]), 1)
-        # self.assertEqual(data["questions"][0]["id"], 6)
-
+        
     def test_404_if_search_questions_fails(self):
         response = self.client().post("/questions", json={"searchTerm": "a5b6c7d8e9f0"})
         data = json.loads(response.data)
