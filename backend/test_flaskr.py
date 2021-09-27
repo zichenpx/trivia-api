@@ -150,7 +150,6 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(question, None)
 
     def test_404_delete_question_fail(self):
-        """Failing Test for DELETE /questions/<question_id>, question id does not exist"""
         response = self.client().delete("/questions/1912")
         data = json.loads(response.data)
 
