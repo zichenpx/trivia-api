@@ -5,16 +5,16 @@ import json
 from flask_migrate import Migrate
 
 database_name = "trivia"
-# database_path = "postgres://{}/{}".format('localhost:5432', database_name)
-database_path = 'postgres://USER:PASSWORD@localhost:5432/trivia'
+# database_path = "postgres://{}/{}".format("localhost:5432", database_name)
+database_path = "postgres://USER:PASSWORD@localhost:5432/trivia"
 
 db = SQLAlchemy()
 
 
-'''
+"""
 setup_db(app)
     binds a flask application and a SQLAlchemy service
-'''
+"""
 def setup_db(app, database_path=database_path):
     app.config["SQLALCHEMY_DATABASE_URI"] = database_path
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
@@ -23,12 +23,12 @@ def setup_db(app, database_path=database_path):
     migrate = Migrate(app, db)
     # db.create_all()
 
-'''
+"""
 Question
 
-'''
+"""
 class Question(db.Model):  
-  __tablename__ = 'questions'
+  __tablename__ = "questions"
 
   id = Column(Integer, primary_key=True)
   question = Column(String)
@@ -56,19 +56,19 @@ class Question(db.Model):
 
   def format(self):
     return {
-      'id': self.id,
-      'question': self.question,
-      'answer': self.answer,
-      'category': self.category,
-      'difficulty': self.difficulty
+      "id": self.id,
+      "question": self.question,
+      "answer": self.answer,
+      "category": self.category,
+      "difficulty": self.difficulty
     }
 
-'''
+"""
 Category
 
-'''
+"""
 class Category(db.Model):  
-  __tablename__ = 'categories'
+  __tablename__ = "categories"
 
   id = Column(Integer, primary_key=True)
   type = Column(String)
@@ -78,6 +78,6 @@ class Category(db.Model):
 
   def format(self):
     return {
-      'id': self.id,
-      'type': self.type
+      "id": self.id,
+      "type": self.type
     }
