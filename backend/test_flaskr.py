@@ -9,13 +9,10 @@ from models import setup_db, Question, Category
 
 
 class TriviaTestCase(unittest.TestCase):
-    """This class represents the trivia test case"""
-
     def setUp(self):
-        """Define test variables and initialize app."""
         self.app = create_app()
         self.client = self.app.test_client
-        self.database_name = "trivia_api"
+        self.database_name = "trivia"
         self.database_path = "postgres://{}:{}@{}/{}".format("USER", "PASSWORD", "localhost:5432", self.database_name)
         setup_db(self.app, self.database_path)
 
@@ -56,15 +53,11 @@ class TriviaTestCase(unittest.TestCase):
     Write at least one test for each test for successful operation and for expected errors.
     """
     def test_get_paginated_questions(self):
-        # get response and load data
         response = self.client().get("/questions")
         data = json.loads(response.data)
 
-        # check status code and message
         self.assertEqual(response.status_code, 200)
         self.assertEqual(data["success"], True)
-
-        # check that total_questions and questions return data
         self.assertTrue(data["total_questions"])
         self.assertTrue(len(data["questions"]))
 
@@ -105,25 +98,23 @@ class TriviaTestCase(unittest.TestCase):
     def test_create_question(self):
         questions_before = Question.query.all()
 
-        # create new question without json data, then load response data
         response = self.client().post("/questions", json=self.new_question)
         data = json.loads(response.data)
-        
         questions_after = Question.query.all()
 
-        # check if the question has been created
+        # check whether the question was created
         # question = Question.query.filter_by(id=data["created"]).one_or_none()
         
         self.assertEqual(response.status_code, 201)
         self.assertEqual(data["success"], True)
 
         self.assertTrue(len(questions_after) - len(questions_before) == 1)
+        # check exist
         # self.assertIsNotNone(question)
 
     def test_422_if_question_creation_fails(self):
         questions_before = Question.query.all()
 
-        # create new question without json data, then load response data
         response = self.client().post("/questions", json={})
         data = json.loads(response.data)
 
@@ -136,7 +127,7 @@ class TriviaTestCase(unittest.TestCase):
 
     def test_delete_question(self):
         questions_before = Question.query.all()
-        q_id = 1
+        q_id = 4
 
         response = self.client().delete("/questions/{}".format(q_id))
         data = json.loads(response.data)
@@ -158,20 +149,17 @@ class TriviaTestCase(unittest.TestCase):
         self.assertFalse(data["success"])
 
     def test_search_questions(self):
-
         response = self.client().post("/questions", json={"searchTerm": "1990"})
-
         data = json.loads(response.data)
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(data["success"], True)
-
+        # check
         # self.assertEqual(len(data["question"]), 1)
         # self.assertEqual(data["questions"][0]["id"], 6)
 
     def test_404_if_search_questions_fails(self):
         response = self.client().post("/questions", json={"searchTerm": "a5b6c7d8e9f0"})
-
         data = json.loads(response.data)
 
         self.assertEqual(response.status_code, 404)

@@ -128,6 +128,7 @@ def create_app(test_config=None):
     try:
       question.delete()
     except:
+      db.session.rollback()
       abort(422)
     finally:
       db.session.close()
@@ -232,9 +233,7 @@ def create_app(test_config=None):
       "total_questions": total_questions,
       "current_category": category.type,
     }
-
     return jsonify(result), 200
-
 
 
   """
