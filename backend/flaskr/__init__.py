@@ -203,7 +203,7 @@ def create_app(test_config=None):
           answer = answer,
           difficulty = difficulty,
           category = category,
-          creator = creator,
+          creator = creator
         )
         new_question.insert()
       except Exception:

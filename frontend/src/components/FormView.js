@@ -11,7 +11,8 @@ class FormView extends Component {
       answer: "",
       difficulty: 1,
       category: 1,
-      categories: {}
+      categories: {},
+      creator:""
     }
   }
 
@@ -42,7 +43,8 @@ class FormView extends Component {
         question: this.state.question,
         answer: this.state.answer,
         difficulty: this.state.difficulty,
-        category: this.state.category
+        category: this.state.category,
+        creator: this.state.creator
       }),
       xhrFields: {
         withCredentials: true
@@ -95,6 +97,10 @@ class FormView extends Component {
                   )
                 })}
             </select>
+          </label>
+          <label>
+            Creator
+            <input type="text" name="creator" onChange={this.handleChange}/>
           </label>
           <input type="submit" className="button" value="Submit" />
         </form>
