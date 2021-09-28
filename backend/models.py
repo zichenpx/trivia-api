@@ -35,11 +35,12 @@ class Question(db.Model):
   difficulty = Column(Integer)
   creator = Column(String)
 
-  def __init__(self, question, answer, category, difficulty):
+  def __init__(self, question, answer, category, difficulty, creator):
     self.question = question
     self.answer = answer
     self.category = category
     self.difficulty = difficulty
+    self.creator = creator
 
   def insert(self):
     db.session.add(self)
@@ -58,7 +59,8 @@ class Question(db.Model):
       "question": self.question,
       "answer": self.answer,
       "category": self.category,
-      "difficulty": self.difficulty
+      "difficulty": self.difficulty,
+      "creator":self.creator
     }
 
 # --------------------------------------------------

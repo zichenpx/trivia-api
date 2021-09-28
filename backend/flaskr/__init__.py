@@ -26,8 +26,6 @@ def create_app(test_config=None):
   app = Flask(__name__)
   setup_db(app)
 
-
-  
   """
   @TODO: Set up CORS. Allow "*" for origins. Delete the sample route after completing the TODOs
   """
@@ -51,26 +49,29 @@ def create_app(test_config=None):
   """
   @app.route("/categories")
   def get_categories():
-    try:
-      categories = Category.query.order_by(Category.id.asc()).all()
-      categories_dict = {}
+    categories = Category.query.order_by(Category.id.asc()).all()
+    categories_dict = {}
 
-      for category in categories:
-        categories_dict[category.id] = category.type
+    for category in categories:
+      # print(categories_dict)
+      categories_dict[category.id] = category.type
+      # print(categories_dict)
+      # print(categories_dict[category.id])
 
-      if (len(categories) == 0):
-        return jsonify({
-        "success": True,
-        "categories": "no categories" 
-      }), 200
+    if (len(categories) == 0):
+      return jsonify({
+      "success": False,
+      "categories": "no categorie were found" 
+    }), 404
 
-      result = {
-        "success": True,
-        "categories": categories_dict
-      }
-      return jsonify(result), 200
-    except Exception:
-      abort(500)
+    result = {
+      "success": True,
+      "categories": categories_dict
+    }
+
+    return jsonify(result), 200
+
+
 
 
   """
@@ -87,30 +88,30 @@ def create_app(test_config=None):
   """
   @app.route("/questions")
   def get_question():
-    try:
-      questions = Question.query.order_by(Question.id.desc()).all()
-      total_questions = len(questions)
-      current_questions = paginate_questions(request, questions)
+    error = False
+    questions = Question.query.order_by(Question.id.desc()).all()
+    total_questions = len(questions)
+    current_questions = paginate_questions(request, questions)
 
-      categories = Category.query.order_by(Category.id).all()
-      categories_dict = {}
-      for category in categories:
-        categories_dict[category.id] = category.type
+    categories = Category.query.order_by(Category.id).all()
+    categories_dict = {}
+    for category in categories:
+      categories_dict[category.id] = category.type
 
-      if (len(current_questions) == 0):
-        abort(404)
+    if (len(current_questions) == 0):
+      error = True
 
-      result = {
-        "success": True,
-        "total_questions": total_questions,
-        "category": categories_dict,
-        "questions": current_questions
-      }
+    if (error):
+      abort(404)
 
-      return jsonify(result), 200
+    result = {
+      "success": True,
+      "total_questions": total_questions,
+      "category": categories_dict,
+      "questions": current_questions
+    }
 
-    except Exception:
-      abort(404) 
+    return jsonify(result), 200
 
 
   """
@@ -163,7 +164,7 @@ def create_app(test_config=None):
   @app.route("/questions", methods=["POST"])
   def create_question():
     data = request.get_json()
-
+    # search for question
     if "searchTerm" in data:
       search_term = data["searchTerm"]
       search = Question.query.filter(Question.question.ilike(f"%{search_term}%")).all()
@@ -179,13 +180,20 @@ def create_app(test_config=None):
       else:
         abort(404)
 
+    # create a new question
     else:
+      # if data["question"] is None:
+      #   abort(422)
+      if (("question" not in data) or ("answer" not in data) or ("difficulty" not in data) or ("category" not in data) or ("creator" not in data)):
+        abort(422)
+
       question = data.get("question", "")
       answer = data.get("answer", "")
       difficulty = data.get("difficulty", "")
-      category =data.get("category", "")
+      category = data.get("category", "")
+      creator =data.get("creator", "")
 
-      if ((question == "") or (answer == "") or (difficulty == "") or (category == "")):
+      if ((question == "") or (answer == "") or (difficulty == "") or (category == "") or (creator == "")):
         abort(422)
 
       try: 
@@ -193,7 +201,8 @@ def create_app(test_config=None):
           question = question,
           answer = answer,
           difficulty = difficulty,
-          category = category
+          category = category,
+          creator = creator,
         )
         new_question.insert()
       except Exception:
@@ -250,10 +259,10 @@ def create_app(test_config=None):
   @app.route("/quizzes", methods=["POST"])
   def play_quiz():
     data = request.get_json(force=True)
-    print("print data: ")
-    print(data)
-    print("print data type: ")
-    print(type(data))
+    # print("print data: ")
+    # print(data)
+    # print("print data type: ")
+    # print(type(data))
 
     if "previous_questions" not in data \
         or "quiz_category" not in data \

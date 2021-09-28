@@ -13,7 +13,7 @@ class TriviaTestCase(unittest.TestCase):
         self.app = create_app()
         self.client = self.app.test_client
         self.database_name = "trivia_test"
-        self.database_path = "postgres://{}:{}@{}/{}".format("USER", "PASSWORD", "localhost:5432", self.database_name)
+        self.database_path = "postgres://{}:{}@{}/{}".format("", "", "localhost:5432", self.database_name)
         setup_db(self.app, self.database_path)
 
         # self.new_question = {
@@ -34,7 +34,15 @@ class TriviaTestCase(unittest.TestCase):
           "question": "Two Famous French Food",
           "answer": "Cheese, Wine",
           "difficulty": 1,
-          "category": 3
+          "category": 3,
+          "creator": "Amy"
+        }
+
+        self.new_question_missing_data = {
+          "question": "Two Famous French Food",
+          "answer": "Cheese, Wine",
+          "difficulty": 1,
+          "creator": "Lily"
         }
 
         # binds the app to the current context
@@ -62,7 +70,7 @@ class TriviaTestCase(unittest.TestCase):
         self.assertTrue(len(data["questions"]))
 
     def test_404_request_beyond_vaid_page(self):
-        response = self.client().get("/questions?page=100")
+        response = self.client().get("/questions?page=1000")
         data = json.loads(response.data)
 
         self.assertEqual(response.status_code, 404)
@@ -112,7 +120,20 @@ class TriviaTestCase(unittest.TestCase):
         # check exist
         # self.assertIsNotNone(question)
 
-    def test_422_if_question_creation_fails(self):
+    def test_422_create_question_with_no_data(self):
+        questions_before = Question.query.all()
+
+        response = self.client().post("/questions", json=self.new_question_missing_data)
+        data = json.loads(response.data)
+
+        questions_after = Question.query.all()
+
+        self.assertEqual(response.status_code, 422)
+        self.assertEqual(data["success"], False)
+        self.assertTrue(len(questions_after) == len(questions_before))
+        self.assertEqual(data["message"], "unprocessable")
+
+    def test_422_create_question_with_no_data(self):
         questions_before = Question.query.all()
 
         response = self.client().post("/questions", json={})
@@ -127,7 +148,7 @@ class TriviaTestCase(unittest.TestCase):
 
     def test_delete_question(self):
         questions_before = Question.query.all()
-        q_id = 1
+        q_id = 4
 
         response = self.client().delete("/questions/{}".format(q_id))
         data = json.loads(response.data)
@@ -146,7 +167,7 @@ class TriviaTestCase(unittest.TestCase):
 
         self.assertEqual(response.status_code, 404)
         self.assertIn("success", data)
-        self.assertFalse(data["success"])
+        self.assertFalse(data["success"], True)
 
     def test_search_questions(self):
         response = self.client().post("/questions", json={"searchTerm": "1990"})
@@ -170,7 +191,7 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn("question", data)
         self.assertEqual((data["question"]["category"]), self.test_quizz["quiz_category"]["id"])
-        self.assertTrue(data["question"])
+        self.assertTrue(data["question"], True)
 
     def test_404_play_quizzes(self):
         response = self.client().post("/quizzes", json={})
@@ -178,7 +199,7 @@ class TriviaTestCase(unittest.TestCase):
 
         self.assertEqual(response.status_code, 404)
         self.assertIn("success", data)
-        self.assertFalse(data["success"])
+        self.assertFalse(data["success"], True)
 
 # Make the tests conveniently executable
 if __name__ == "__main__":
