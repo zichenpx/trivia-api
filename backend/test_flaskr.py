@@ -20,7 +20,8 @@ class TriviaTestCase(unittest.TestCase):
         #   "question": "The capital of Taiwan(ROC)",
         #   "answer": "Taipei",
         #   "difficulty": 1,
-        #   "category": 3
+        #   "category": 3,
+        #   "creator": "Polsem"
         # }
 
         self.test_quizz = {
