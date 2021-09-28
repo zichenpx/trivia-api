@@ -107,7 +107,8 @@ def create_app(test_config=None):
     result = {
       "success": True,
       "total_questions": total_questions,
-      "category": categories_dict,
+      "current_category": categories_dict,
+      # "categories": categories_dict,
       "questions": current_questions
     }
 
@@ -286,7 +287,7 @@ def create_app(test_config=None):
 
       result = {
         "success": True,
-        "question": next_question,
+        "question": next_question
       }
       return jsonify(result), 200
     

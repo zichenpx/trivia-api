@@ -29,8 +29,9 @@ class QuestionView extends Component {
         this.setState({
           questions: result.questions,
           totalQuestions: result.total_questions,
-          categories: result.categories,
-          currentCategory: result.current_category })
+          // categories: result.categories,
+          // currentCategory: result.current_category 
+        })
         return;
       },
       error: (error) => {
@@ -91,7 +92,8 @@ class QuestionView extends Component {
         this.setState({
           questions: result.questions,
           totalQuestions: result.total_questions,
-          currentCategory: result.current_category })
+          // currentCategory: result.current_category 
+        })
         return;
       },
       error: (error) => {
