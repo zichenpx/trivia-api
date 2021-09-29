@@ -41,6 +41,7 @@ class FormView extends Component {
       },
       crossDomain: true,
       success: (result) => {
+        alert('New Category has been successfully created.')
         document.getElementById("add-category-form").reset();
         return;
       },
