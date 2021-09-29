@@ -71,8 +71,58 @@ def create_app(test_config=None):
 
     return jsonify(result), 200
 
+  """
+  Create catoegories
+  """
+  @app.route("/categories", methods=["POST"])
+  def create_category():
+    data = request.get_json()
+    if (("type" not in data) or (data["type"] == "")):
+      abort(422)
 
+    # 過濾輸入是否已存在的 category
+    new_type = data["type"]
+    print(new_type)
+    if (len(Category.query.filter(Category.type.ilike(f"%{new_type}%")).all()) != 0):
+      print("Category exists.")
+      abort(422)
+    
+    try: 
+      new_category = Category(new_type)
+      new_category.insert()
+    except Exception:
+      db.session.rollback()
+      # print(exc.info())
+      abort(500)
+    finally:
+      db.session.close()
+      result = {
+        "success": True,
+        "message": "New category: \'" + new_type + "\' created."
+      }
+      return jsonify(result), 201
 
+  """
+  Delete Catoegories
+  """
+  @app.route("/categories/<int:c_id>", methods=["DELETE"])
+  def delete_category(c_id):
+    category = Category.query.filter(Category.id == c_id).one_or_none()
+    if category is None:
+      abort(404)
+    try:
+      category.delete()
+    except:
+      db.session.rollback()
+      abort(422)
+    finally:
+      db.session.close()
+      result = {
+        "success": True,
+        "deleted": c_id,
+        "message": "Category " + str(c_id) + " was successfully deleted"
+      }
+      return jsonify(result), 201
 
   """
   @TODO: 
@@ -172,10 +222,11 @@ def create_app(test_config=None):
       total_results = len(search)
       if (len(search) !=0):
         current_results = paginate_questions(request, search)
+        print(current_results)
         result = {
           "success": True,
-          "results": current_results,
-          "total_results": total_results,
+          "questions": current_results,
+          "total_questions": total_results
         }
         return jsonify(result), 200
       else:

@@ -146,6 +146,7 @@ class QuestionView extends Component {
               category={this.state.categories[q.category]} 
               difficulty={q.difficulty}
               questionAction={this.questionAction(q.id)}
+              // total_questions={this.total_questions}
             />
           ))}
           <div className="pagination-menu">

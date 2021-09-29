@@ -24,6 +24,14 @@ class TriviaTestCase(unittest.TestCase):
         #   "creator": "Polsem"
         # }
 
+        self.new_category = {
+            "type": "Movie"
+        }
+
+        self.new_category_exists = {
+            "type": "art"
+        }
+
         self.test_quizz = {
             "previous_questions": [2],
             "quiz_category": {
@@ -84,6 +92,20 @@ class TriviaTestCase(unittest.TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(data["success"], True)
+
+    def test_create_categories(self):
+        response = self.client().post("/categories", json=self.new_category)
+        data = json.loads(response.data)
+
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(data["success"], True)
+    
+    def test_create_categories_with_existing_category(self):
+        response = self.client().post("/categories", json=self.new_category_exists)
+        data = json.loads(response.data)
+
+        self.assertEqual(response.status_code, 422)
+        self.assertFalse(data["success"], True)
 
     def test_get_questions_by_category(self):
         response = self.client().get("/categories/2/questions")
