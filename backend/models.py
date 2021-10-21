@@ -3,10 +3,14 @@ from sqlalchemy import Column, String, Integer, create_engine
 from flask_sqlalchemy import SQLAlchemy
 import json
 from flask_migrate import Migrate
-from dotenv import load_dotenv
+from dotenv import load_dotenv, dotenv_values
 
+# load_dotenv()
+# database_name = os.getenv('DB_NAME')
+# database_path = os.getenv('DB_PATH')
 database_name = os.environ.get('DB_NAME')
 database_path = os.environ.get('DB_PATH')
+
 # database_name = "trivia"
 # database_path = "postgres://USER:PASSWORD@localhost:5432/trivia"
 
