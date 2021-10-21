@@ -2,6 +2,7 @@ import os
 import unittest
 import json
 from flask_sqlalchemy import SQLAlchemy
+from dotenv import load_dotenv
 
 from flaskr import create_app
 from models import setup_db, Question, Category
@@ -13,16 +14,8 @@ class TriviaTestCase(unittest.TestCase):
         self.app = create_app()
         self.client = self.app.test_client
         self.database_name = "trivia_test"
-        self.database_path = "postgres://{}:{}@{}/{}".format("", "", "localhost:5432", self.database_name)
+        self.database_path = "postgres://{}:{}@{}/{}".format("USER", "PASSWORD", "localhost:5432", self.database_name)
         setup_db(self.app, self.database_path)
-
-        # self.new_question = {
-        #   "question": "The capital of Taiwan(ROC)",
-        #   "answer": "Taipei",
-        #   "difficulty": 1,
-        #   "category": 3,
-        #   "creator": "Polsem"
-        # }
 
         self.new_category = {
             "type": "Movie"
@@ -176,7 +169,7 @@ class TriviaTestCase(unittest.TestCase):
         response = self.client().delete("/questions/{}".format(q_id))
         data = json.loads(response.data)
         questions_after = Question.query.all()
-        question = Question.query.filter(Question.id == 1).one_or_none()
+        question = Question.query.filter(Question.id == q_id).one_or_none()
 
         self.assertEqual(response.status_code, 201)
         self.assertEqual(data["success"], True)

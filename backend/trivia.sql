@@ -2,8 +2,10 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 11.3
--- Dumped by pg_dump version 11.3
+-- Dumped from database version 13.2
+-- Dumped by pg_dump version 13.2
+
+-- Started on 2021-09-30 21:07:04
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -18,10 +20,23 @@ SET row_security = off;
 
 SET default_tablespace = '';
 
-SET default_with_oids = false;
+SET default_table_access_method = heap;
 
 --
--- Name: categories; Type: TABLE; Schema: public; Owner: caryn
+-- TOC entry 204 (class 1259 OID 57534)
+-- Name: alembic_version; Type: TABLE; Schema: public; Owner: USER
+--
+
+CREATE TABLE public.alembic_version (
+    version_num character varying(32) NOT NULL
+);
+
+
+ALTER TABLE public.alembic_version OWNER TO "USER";
+
+--
+-- TOC entry 200 (class 1259 OID 57502)
+-- Name: categories; Type: TABLE; Schema: public; Owner: USER
 --
 
 CREATE TABLE public.categories (
@@ -30,10 +45,11 @@ CREATE TABLE public.categories (
 );
 
 
-ALTER TABLE public.categories OWNER TO caryn;
+ALTER TABLE public.categories OWNER TO "USER";
 
 --
--- Name: categories_id_seq; Type: SEQUENCE; Schema: public; Owner: caryn
+-- TOC entry 201 (class 1259 OID 57508)
+-- Name: categories_id_seq; Type: SEQUENCE; Schema: public; Owner: USER
 --
 
 CREATE SEQUENCE public.categories_id_seq
@@ -45,17 +61,20 @@ CREATE SEQUENCE public.categories_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.categories_id_seq OWNER TO caryn;
+ALTER TABLE public.categories_id_seq OWNER TO "USER";
 
 --
--- Name: categories_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: caryn
+-- TOC entry 3010 (class 0 OID 0)
+-- Dependencies: 201
+-- Name: categories_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: USER
 --
 
 ALTER SEQUENCE public.categories_id_seq OWNED BY public.categories.id;
 
 
 --
--- Name: questions; Type: TABLE; Schema: public; Owner: caryn
+-- TOC entry 202 (class 1259 OID 57510)
+-- Name: questions; Type: TABLE; Schema: public; Owner: USER
 --
 
 CREATE TABLE public.questions (
@@ -64,14 +83,15 @@ CREATE TABLE public.questions (
     answer text,
     difficulty integer,
     category integer,
-	creator text
+    creator character varying
 );
 
 
-ALTER TABLE public.questions OWNER TO caryn;
+ALTER TABLE public.questions OWNER TO "USER";
 
 --
--- Name: questions_id_seq; Type: SEQUENCE; Schema: public; Owner: caryn
+-- TOC entry 203 (class 1259 OID 57516)
+-- Name: questions_id_seq; Type: SEQUENCE; Schema: public; Owner: USER
 --
 
 CREATE SEQUENCE public.questions_id_seq
@@ -83,31 +103,48 @@ CREATE SEQUENCE public.questions_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.questions_id_seq OWNER TO caryn;
+ALTER TABLE public.questions_id_seq OWNER TO "USER";
 
 --
--- Name: questions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: caryn
+-- TOC entry 3011 (class 0 OID 0)
+-- Dependencies: 203
+-- Name: questions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: USER
 --
 
 ALTER SEQUENCE public.questions_id_seq OWNED BY public.questions.id;
 
 
 --
--- Name: categories id; Type: DEFAULT; Schema: public; Owner: caryn
+-- TOC entry 2862 (class 2604 OID 57518)
+-- Name: categories id; Type: DEFAULT; Schema: public; Owner: USER
 --
 
 ALTER TABLE ONLY public.categories ALTER COLUMN id SET DEFAULT nextval('public.categories_id_seq'::regclass);
 
 
 --
--- Name: questions id; Type: DEFAULT; Schema: public; Owner: caryn
+-- TOC entry 2863 (class 2604 OID 57519)
+-- Name: questions id; Type: DEFAULT; Schema: public; Owner: USER
 --
 
 ALTER TABLE ONLY public.questions ALTER COLUMN id SET DEFAULT nextval('public.questions_id_seq'::regclass);
 
 
 --
--- Data for Name: categories; Type: TABLE DATA; Schema: public; Owner: caryn
+-- TOC entry 3004 (class 0 OID 57534)
+-- Dependencies: 204
+-- Data for Name: alembic_version; Type: TABLE DATA; Schema: public; Owner: USER
+--
+
+COPY public.alembic_version (version_num) FROM stdin;
+9ca626d7ba9a
+\.
+
+
+--
+-- TOC entry 3000 (class 0 OID 57502)
+-- Dependencies: 200
+-- Data for Name: categories; Type: TABLE DATA; Schema: public; Owner: USER
 --
 
 COPY public.categories (id, type) FROM stdin;
@@ -123,7 +160,9 @@ COPY public.categories (id, type) FROM stdin;
 
 
 --
--- Data for Name: questions; Type: TABLE DATA; Schema: public; Owner: caryn
+-- TOC entry 3002 (class 0 OID 57510)
+-- Dependencies: 202
+-- Data for Name: questions; Type: TABLE DATA; Schema: public; Owner: USER
 --
 
 COPY public.questions (id, question, answer, difficulty, category, creator) FROM stdin;
@@ -147,25 +186,40 @@ COPY public.questions (id, question, answer, difficulty, category, creator) FROM
 21	Who discovered penicillin?	Alexander Fleming	3	1	Argy
 22	Hematology is a branch of medicine involving the study of what?	Blood	4	1	Argy
 23	Which dung beetle was worshipped by the ancient Egyptians?	Scarab	4	4	Max
+24	The capital of Taiwan(ROC)	Taipei	2	3	Amy
 \.
 
 
 --
--- Name: categories_id_seq; Type: SEQUENCE SET; Schema: public; Owner: caryn
+-- TOC entry 3012 (class 0 OID 0)
+-- Dependencies: 201
+-- Name: categories_id_seq; Type: SEQUENCE SET; Schema: public; Owner: USER
 --
 
-SELECT pg_catalog.setval('public.categories_id_seq', 6, true);
-
-
---
--- Name: questions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: caryn
---
-
-SELECT pg_catalog.setval('public.questions_id_seq', 23, true);
+SELECT pg_catalog.setval('public.categories_id_seq', 8, true);
 
 
 --
--- Name: categories categories_pkey; Type: CONSTRAINT; Schema: public; Owner: caryn
+-- TOC entry 3013 (class 0 OID 0)
+-- Dependencies: 203
+-- Name: questions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: USER
+--
+
+SELECT pg_catalog.setval('public.questions_id_seq', 24, true);
+
+
+--
+-- TOC entry 2869 (class 2606 OID 57538)
+-- Name: alembic_version alembic_version_pkc; Type: CONSTRAINT; Schema: public; Owner: USER
+--
+
+ALTER TABLE ONLY public.alembic_version
+    ADD CONSTRAINT alembic_version_pkc PRIMARY KEY (version_num);
+
+
+--
+-- TOC entry 2865 (class 2606 OID 57521)
+-- Name: categories categories_pkey; Type: CONSTRAINT; Schema: public; Owner: USER
 --
 
 ALTER TABLE ONLY public.categories
@@ -173,20 +227,15 @@ ALTER TABLE ONLY public.categories
 
 
 --
--- Name: questions questions_pkey; Type: CONSTRAINT; Schema: public; Owner: caryn
+-- TOC entry 2867 (class 2606 OID 57523)
+-- Name: questions questions_pkey; Type: CONSTRAINT; Schema: public; Owner: USER
 --
 
 ALTER TABLE ONLY public.questions
     ADD CONSTRAINT questions_pkey PRIMARY KEY (id);
 
 
---
--- Name: questions category; Type: FK CONSTRAINT; Schema: public; Owner: caryn
---
-
-ALTER TABLE ONLY public.questions
-    ADD CONSTRAINT category FOREIGN KEY (category) REFERENCES public.categories(id) ON UPDATE CASCADE ON DELETE SET NULL;
-
+-- Completed on 2021-09-30 21:07:04
 
 --
 -- PostgreSQL database dump complete
