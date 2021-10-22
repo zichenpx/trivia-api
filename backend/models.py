@@ -5,11 +5,14 @@ import json
 from flask_migrate import Migrate
 from dotenv import load_dotenv, dotenv_values
 
-# load_dotenv()
-# database_name = os.getenv('DB_NAME')
-# database_path = os.getenv('DB_PATH')
-database_name = os.environ.get('DB_NAME')
-database_path = os.environ.get('DB_PATH')
+DB_USER = os.environ.get("DB_USER")
+DB_PASSWORD = os.environ.get("DB_PASSWORD")
+DB_HOST = os.environ.get("DB_HOST")
+DB_PORT = os.environ.get("DB_PORT")
+DB_NAME = os.environ.get("DB_NAME")
+database_name = DB_NAME
+database_path = "postgres://{}:{}@{}:{}/{}".format(DB_USER,DB_PASSWORD,DB_HOST,DB_PORT,DB_NAME)
+
 
 # database_name = "trivia"
 # database_path = "postgres://USER:PASSWORD@localhost:5432/trivia"

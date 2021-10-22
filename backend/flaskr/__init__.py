@@ -8,6 +8,7 @@ import random
 
 from sqlalchemy.sql.expression import desc
 from sqlalchemy.sql.operators import exists
+from werkzeug.wrappers import response
 from models import setup_db, Question, Category, db
 
 # constants
@@ -90,14 +91,15 @@ def create_app(test_config=None):
         # 過濾輸入是否已存在的 category
         new_type = data["type"]
         if (len(Category.query.filter(Category.type.ilike(f"%{new_type}%")).all()) != 0):
-            # res_c_exists = jsonify(
-            #     {
-            #         "code": 422,
-            #         "message":"unprocessable",
-            #         "detail": "Category exists."
-            #     }
-            # )
-            res = Response(response="422 unprocessable - Category exists", status=422)
+            res = jsonify(
+                {
+                    "code": 422,
+                    "message":"unprocessable",
+                    "detail": "Category exists.",
+                    "success": False
+                }
+            )
+            # res = Response(response="422 unprocessable - Category exists", status=422, headers=None)
             abort(res)
 
         try:
