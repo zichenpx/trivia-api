@@ -2,7 +2,7 @@
 
 ## Full Stack Trivia
 
-This project is web application allows users can share their knowleege and play a game about it by answering trivia questions. The task for the project was to createan API and test suite for implementing the following functionality:
+This project is web application allows users can share their knowledge and play a game about it by answering trivia questions. The task for the project was to createan API and test suite for implementing the following functionality:
 
 1. Display questions - both all questions and by category. Questions should show the question, category and difficulty rating by default and can show/hide the answer.
 2. Delete questions.
@@ -152,9 +152,11 @@ The API will return four types of errors:
 #### POST /categories
 
 - General: Returns a new created category.
-- Sample: `curl -X POST http://127.0.0.1:5000/categories ^\
-			-H "Content-Type: application/json" ^\
-			-d '{"type": "Books"}'`<br>
+- Sample: `curl --location --request POST 'http://127.0.0.1:5000/categories' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "type": "Books"
+}'`<br>
 
         {
 			"categories": {
@@ -310,7 +312,15 @@ This endpoint either creates a new question or returns search results.
 - General:
   - Creates a new question using JSON request parameters.
   - Returns JSON object with newly created question, as well as paginated questions.
-- Sample: `curl http://127.0.0.1:5000/questions -X POST -H "Content-Type: application/json" -d '{ "question": "Total Harry Potter Novels", "answer": "7", "difficulty": 1, "category": "5", "creator": "Trivis" }'`<br>
+- Sample: `curl --location --request POST 'http://127.0.0.1:5000/questions' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+          "question": "Total Harry Potter Novels",
+          "answer": "7",
+          "difficulty": 1,
+          "category": 5,
+          "creator": "Trivis"
+        }'`<br>
 
 		{
 			"message": "New question: Total Harry Potter Novels created.",

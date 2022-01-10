@@ -13,10 +13,6 @@ DB_NAME = os.environ.get("DB_NAME")
 database_name = DB_NAME
 database_path = "postgres://{}:{}@{}:{}/{}".format(DB_USER,DB_PASSWORD,DB_HOST,DB_PORT,DB_NAME)
 
-
-# database_name = "trivia"
-# database_path = "postgres://USER:PASSWORD@localhost:5432/trivia"
-
 db = SQLAlchemy()
 
 # --------------------------------------------------
