@@ -362,9 +362,9 @@ def create_app(test_config=None):
         # print("print data type: ")
         # print(type(data))
 
-        if "previous_questions" not in data \
-                or "quiz_category" not in data \
-                or "id" not in data["quiz_category"]:
+        if "previous_questions" not in data:
+                # or "quiz_category" not in data:
+                # or "id" not in data["quiz_category"]:
             abort(404)
         # test_404_play_quizzes 出現 \
         # TypeError: "NoneType" object is not subscriptable, \
@@ -379,7 +379,7 @@ def create_app(test_config=None):
             if quiz_category_id:
                 questions = questions_rest.filter_by(category=quiz_category_id).all()
             else:
-                abort(404)
+                questions = questions_rest.all()
 
             next_question = random.choice(questions).format()
         except:
