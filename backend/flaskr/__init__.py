@@ -379,7 +379,10 @@ def create_app(test_config=None):
             if quiz_category_id:
                 questions = questions_rest.filter_by(category=quiz_category_id).all()
             else:
-                questions = questions_rest.all()
+                if quiz_category_id == 0:
+                    questions = questions_rest.all()
+                else:
+                    abort(404)
 
             next_question = random.choice(questions).format()
         except:
